@@ -156,3 +156,11 @@ scripts/          # 构建辅助（路径重映射）
 ## License
 
 MIT
+
+## 请作者喝杯豆浆
+
+如果这个项目对你有帮助，欢迎请作者喝杯豆浆。
+
+<p align="center">
+  <img src="docs/sponsor/wx.jpg" alt="微信赞赏码：请作者喝杯豆浆" width="320">
+</p>
