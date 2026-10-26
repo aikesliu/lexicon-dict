@@ -1,0 +1,38 @@
+Name:           lexicon-dict
+Version:        @VERSION@
+Release:        1%{?dist}
+Summary:        离线词典桌面应用（单二进制）
+License:        MIT
+URL:            https://example.invalid/lexicon-dict
+Source0:        lexicon-dict
+Source1:        io.github.lexicon.dict.desktop
+Source2:        io.github.lexicon.dict.svg
+Requires:       glibc
+Recommends:     google-droid-sans-fonts
+Recommends:     abattis-cantarell-fonts
+Recommends:     google-noto-sans-cjk-fonts
+
+%description
+Rust 单文件桌面版本：离线解析 .ld2、进程内查询与渲染，
+无 daemon、无扩展、无浏览器内核。支持 Fedora 与 Windows 11。
+
+%prep
+
+%build
+
+%install
+install -d %{buildroot}%{_bindir}
+install -m 0755 %{SOURCE0} %{buildroot}%{_bindir}/lexicon-dict
+install -d %{buildroot}%{_datadir}/applications
+install -m 0644 %{SOURCE1} %{buildroot}%{_datadir}/applications/io.github.lexicon.dict.desktop
+install -d %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
+install -m 0644 %{SOURCE2} %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/io.github.lexicon.dict.svg
+
+%files
+%{_bindir}/lexicon-dict
+%{_datadir}/applications/io.github.lexicon.dict.desktop
+%{_datadir}/icons/hicolor/scalable/apps/io.github.lexicon.dict.svg
+
+%changelog
+* Fri Oct 23 2026 lexicon-dict contributors <noreply@example.invalid> - @VERSION@-1
+- 单二进制词典 app

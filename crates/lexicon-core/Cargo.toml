@@ -1,0 +1,16 @@
+[package]
+name = "lexicon-core"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+encoding_rs = "0.8.42"
+entities = "1.0.1"
+flate2 = "1.1.10"
+memchr = "2.8.3"
+memmap2 = "0.9.12"
+rayon = "1.12.0"
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.154", features = ["preserve_order"] }
+sha2 = "0.11.1"
+toml = "1.1.8"

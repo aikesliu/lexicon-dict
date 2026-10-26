@@ -1,0 +1,17 @@
+[Desktop Entry]
+Type=Application
+Name=词典
+Name[zh_CN]=词典
+Name[zh_TW]=詞典
+Name[en]=Dictionary
+GenericName=离线词典
+GenericName[en]=Offline dictionary
+Comment=离线词典查询（.ld2 / StarDict）
+Comment[en]=Offline .ld2 / StarDict dictionary lookup
+Exec=lexicon-dict
+StartupWMClass=lexicon-dict
+Icon=io.github.lexicon.dict
+Terminal=false
+Categories=Utility;Dictionary;
+Keywords=dictionary;dict;lexicon;stardict;词典;查词;
+StartupNotify=true

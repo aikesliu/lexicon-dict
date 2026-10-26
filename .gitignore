@@ -1,0 +1,6 @@
+/target
+/dist
+/dist-rpm
+*.zip
+!packaging/**/*.zip
+.DS_Store
