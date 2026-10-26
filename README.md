@@ -101,6 +101,16 @@ make dist
 make ubuntu
 ```
 
+## 发布
+
+推送到 `deploy` 分支会触发 `.github/workflows/release.yml`：
+
+- 在 Ubuntu 22.04 上生成 Linux tar.gz、Fedora RPM、Ubuntu/Debian `.deb`、Windows zip；
+- 自动计算 `SHA256SUMS`；
+- 以 `v<版本>` 创建/更新 GitHub Release 并附带全部产物。
+
+默认开发分支为 `main`，`deploy` 只用于发布。
+
 ## 数据位置
 
 | 平台 | 配置 | 缓存 |
@@ -138,6 +148,7 @@ crates/
   lexicon-app/      # 单二进制桌面 app（eframe/egui）
   lexicon-cli/      # 转换/诊断 CLI（可选）
 packaging/        # Linux tar.gz/RPM、Debian/Ubuntu .deb、Windows zip、Inno Setup
+.github/          # GitHub Actions 发布流水线
 docs/             # 架构、Windows 说明
 scripts/          # 构建辅助（路径重映射）
 ```

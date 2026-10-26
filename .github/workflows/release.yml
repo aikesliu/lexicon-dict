@@ -1,0 +1,94 @@
+name: Release
+
+on:
+  push:
+    branches: [deploy]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    outputs:
+      version: ${{ steps.version.outputs.value }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential pkg-config \
+            libx11-dev libxcursor-dev libxrandr-dev libxi-dev \
+            libxinerama-dev libxxf86vm-dev libxkbcommon-dev libxkbcommon-x11-dev \
+            libwayland-dev libgl1-mesa-dev libegl1-mesa-dev \
+            libfontconfig1-dev libfreetype-dev \
+            libxcb1-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev \
+            mingw-w64 zip rpm file
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: lexicon-release
+
+      - name: Build packages
+        run: |
+          chmod +x packaging/*.sh packaging/ubuntu/*.sh scripts/*.sh
+          make dist
+          packaging/ubuntu/package.sh target/release/lexicon-dict
+          cd dist
+          rm -f SHA256SUMS.ubuntu
+          sha256sum *.tar.gz *.zip *.rpm *.deb > SHA256SUMS
+          ls -lh
+
+      - name: Read version
+        id: version
+        run: |
+          version="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -1)"
+          echo "value=$version" >> "$GITHUB_OUTPUT"
+          echo "version=$version"
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: lexicon-dict-packages
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download packages
+        uses: actions/download-artifact@v4
+        with:
+          name: lexicon-dict-packages
+          path: artifacts
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ needs.build.outputs.version }}
+          name: lexicon-dict v${{ needs.build.outputs.version }}
+          target_commitish: ${{ github.sha }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          overwrite_files: true
+          files: |
+            artifacts/*.tar.gz
+            artifacts/*.zip
+            artifacts/*.rpm
+            artifacts/*.deb
+            artifacts/SHA256SUMS
